@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Section 2 — Build the room in real time</title>
+<style>
+  :root{
+    --bg:#0b0a0c;
+    --peach:#e7b485;
+    --title:#ffffff;
+    --desc:#d7d2c9;
+    --muted:#b9b2a6;
+    --glass-line:rgba(255,255,255,.16);
+    --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    font-family:var(--font);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:4vh 4vw;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- Card : reference ratio 319 / 404 (≈ 4:5) — same as Section 1 ---- */
+  .card{
+    position:relative;
+    width:660px;
+    height:836px;
+    flex:none;
+    border-radius:30px;
+    overflow:hidden;
+    background:#1a1714;
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.8);
+    isolation:isolate;
+    container-type:inline-size;
+  }
+  .card__photo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 42%;
+    z-index:0;
+  }
+  /* warm grade + readability gradients */
+  .card__grade{
+    position:absolute;inset:0;z-index:1;
+    background:
+      linear-gradient(to top, rgba(8,6,4,.92) 0%, rgba(8,6,4,.6) 13%, rgba(8,6,4,.1) 28%, rgba(8,6,4,0) 42%),
+      linear-gradient(to bottom, rgba(20,14,8,.34) 0%, rgba(20,14,8,0) 20%);
+    pointer-events:none;
+  }
+
+  /* ---- Frosted glass panel ---- */
+  .glass{
+    position:absolute;
+    z-index:3;
+    left:var(--glass-left,5.6%);
+    top:var(--glass-top,13.5%);
+    width:var(--glass-w,88.8%);
+    height:var(--glass-h,auto);
+    border-radius:26px;
+    padding:5% 6% 5.2%;
+    background:rgba(38,33,28,.46);
+    backdrop-filter:blur(22px) saturate(120%);
+    -webkit-backdrop-filter:blur(22px) saturate(120%);
+    border:1px solid var(--glass-line);
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .glass__title{
+    color:var(--title);
+    font-weight:700;
+    letter-spacing:-.3px;
+    line-height:1.1;
+  }
+  .glass__sub{
+    color:var(--muted);
+    font-weight:500;
+    margin-top:1.6%;
+    line-height:1.2;
+  }
+  .glass__rule{
+    height:1px;
+    background:var(--glass-line);
+    border:0;
+    margin:5% 0;
+  }
+
+  /* ---- Two-column stats row ---- */
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1px 1fr;
+    column-gap:7%;
+    align-items:start;
+  }
+  .stats__div{background:var(--glass-line);align-self:stretch;}
+  .stat__label{
+    color:var(--title);
+    font-weight:600;
+    margin-bottom:6.5%;
+    line-height:1;
+  }
+  /* progress */
+  .progress{
+    display:flex;
+    align-items:center;
+    gap:4%;
+  }
+  .progress__track{
+    display:flex;
+    gap:3.4%;
+    flex:1;
+  }
+  .progress__seg{
+    height:6.5cqw;
+    max-height:9px;
+    flex:1;
+    border-radius:999px;
+    background:rgba(255,255,255,.18);
+  }
+  .progress__seg.is-on{background:var(--peach);}
+  .progress__pct{
+    color:var(--title);
+    font-weight:600;
+    flex:none;
+  }
+  .stat__small{
+    color:var(--muted);
+    font-weight:500;
+    margin-bottom:3%;
+    line-height:1.1;
+  }
+  .stat__accent{
+    color:var(--peach);
+    font-weight:600;
+    line-height:1.1;
+  }
+
+  /* ---- Design overview ---- */
+  .ov__label{
+    color:var(--title);
+    font-weight:600;
+    margin-bottom:5.5%;
+    line-height:1;
+  }
+  .ov{
+    display:grid;
+    grid-template-columns:1fr 1px 1fr 1px 1fr;
+    column-gap:5.4%;
+    align-items:start;
+  }
+  .ov__div{background:var(--glass-line);align-self:stretch;}
+  .ov__cell{display:flex;flex-direction:column;}
+  .ov__icon{
+    color:var(--peach);
+    margin-bottom:8%;
+  }
+  .ov__icon svg{width:13.5cqw;max-width:34px;height:auto;display:block;}
+  .ov__name{
+    color:var(--title);
+    font-weight:600;
+    line-height:1.1;
+    margin-bottom:4%;
+  }
+  .ov__val{
+    color:var(--muted);
+    font-weight:500;
+    line-height:1.1;
+  }
+
+  /* ---- Footer (same system as Section 1) ---- */
+  .footer{
+    position:absolute;
+    z-index:4;
+    left:6.2%;
+    right:6.2%;
+    bottom:5.4%;
+    color:var(--title);
+  }
+  .footer__head{
+    display:flex;
+    align-items:center;
+    gap:3.4%;
+    margin-bottom:3.2%;
+  }
+  .footer__icon{
+    flex:none;
+    width:9.6%;
+    aspect-ratio:1;
+    background:var(--peach);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#241608;
+  }
+  .footer__icon svg{width:52%;height:52%;}
+  .footer__title{
+    font-weight:700;
+    line-height:1.02;
+    letter-spacing:-.8px;
+  }
+  .footer__desc{
+    color:var(--desc);
+    font-weight:500;
+    line-height:1.3;
+    max-width:100%;
+  }
+
+  /* ---- Type scale tied to card width via container query ---- */
+  .glass__title{font-size:clamp(15px,4.2cqw,27px);}
+  .glass__sub{font-size:clamp(11px,3.1cqw,20px);}
+  .stat__label{font-size:clamp(11px,3.1cqw,20px);}
+  .progress__pct{font-size:clamp(11px,3.1cqw,20px);}
+  .stat__small{font-size:clamp(10px,2.9cqw,18px);}
+  .stat__accent{font-size:clamp(11px,3.2cqw,20px);}
+  .ov__label{font-size:clamp(11px,3.1cqw,20px);}
+  .ov__name{font-size:clamp(10px,2.85cqw,18px);}
+  .ov__val{font-size:clamp(9px,2.7cqw,17px);}
+  .footer__title{font-size:clamp(18px,5.6cqw,36px);}
+  .footer__desc{font-size:clamp(13px,4.2cqw,27px);}
+
+  /* ---- Embed mode (inside the landing page) ---- */
+  html.embed,html.embed body{height:100%;width:100%;overflow:hidden;}
+  html.embed body{
+    padding:0;
+    margin:0;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  html.embed .card{
+    width:660px;
+    height:836px;
+    max-width:none;
+    border-radius:30px;
+    box-shadow:none;
+    transform:scale(var(--fit-scale,1));
+    transform-origin:center center;
+  }
+</style>
+<script>
+(function(){
+  var isEmbed = location.search.indexOf('embed') > -1;
+  if(isEmbed){
+    document.documentElement.classList.add('embed');
+    document.documentElement.style.setProperty('--fit-scale', Math.min(window.innerWidth / 660, window.innerHeight / 836));
+  }
+  function fit(){
+    var c=document.querySelector('.card'); if(!c)return;
+    var s=isEmbed ? Math.min(window.innerWidth/660, window.innerHeight/836) : Math.min((window.innerWidth-24)/660,(window.innerHeight-24)/836);
+    c.style.transform='scale('+s+')';
+  }
+  function go(){ if(document.body) document.body.style.overflow='hidden'; fit(); }
+  window.addEventListener('resize',fit);
+  window.addEventListener('DOMContentLoaded',go);
+  window.addEventListener('load',go);
+  go();
+})();
+</script>
+</head>
+<body>
+  <div class="card" data-screen-label="Section 02">
+    <img class="card__photo" src="assets/room2.png" alt="Living room interior" />
+    <div class="card__grade"></div>
+
+    <!-- Frosted glass collaboration panel -->
+    <div class="glass">
+      <div class="glass__title">Living Room Collaboration</div>
+      <div class="glass__sub">Live workspace with your studio</div>
+
+      <hr class="glass__rule" />
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat__label">Layout progress</div>
+          <div class="progress">
+            <div class="progress__track">
+              <span class="progress__seg is-on"></span>
+              <span class="progress__seg is-on"></span>
+              <span class="progress__seg is-on"></span>
+              <span class="progress__seg"></span>
+            </div>
+            <span class="progress__pct">75%</span>
+          </div>
+        </div>
+        <div class="stats__div"></div>
+        <div class="stat">
+          <div class="stat__label">Proposal status</div>
+          <div class="stat__small">Current direction</div>
+          <div class="stat__accent">Warm Minimal</div>
+        </div>
+      </div>
+
+      <hr class="glass__rule" />
+
+      <div class="ov__label">Design overview</div>
+      <div class="ov">
+        <div class="ov__cell">
+          <span class="ov__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1.5"/><path d="M3 11h7"/><path d="M10 3v18"/><path d="M10 14h11"/><path d="M16 14v7"/></svg>
+          </span>
+          <div class="ov__name">Layout flow</div>
+          <div class="ov__val">Optimized</div>
+        </div>
+        <div class="ov__div"></div>
+        <div class="ov__cell">
+          <span class="ov__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 13a2 2 0 0 1 2-2 2 2 0 0 1 2 2v3h10v-3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5H3z"/><path d="M6 18v2"/><path d="M18 18v2"/></svg>
+          </span>
+          <div class="ov__name">Furniture fit</div>
+          <div class="ov__val">92%</div>
+        </div>
+        <div class="ov__div"></div>
+        <div class="ov__cell">
+          <span class="ov__icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1.6"/><rect x="13" y="3" width="8" height="8" rx="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.6"/><rect x="13" y="13" width="8" height="8" rx="1.6"/></svg>
+          </span>
+          <div class="ov__name">Material palette</div>
+          <div class="ov__val">Coordinated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer__head">
+        <span class="footer__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <div class="footer__title">Build the room in real time</div>
+      </div>
+      <p class="footer__desc">Move pieces, explore finishes, and align with your studio on one shared canvas.</p>
+    </div>
+  </div>
+
+  <div id="tweaks-root"></div>
+
+  <script>
+    // Single source of truth for tweak values; applied synchronously at parse
+    // time (before React/Babel) so the card never flashes its CSS fallbacks.
+    window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "glassX": 8,
+      "glassY": 6,
+      "glassW": 86.5,
+      "glassH": 0
+    }/*EDITMODE-END*/;
+    window.__applyTweaks = function(t){
+      var c = document.querySelector('.card'); if(!c) return;
+      var s = c.style;
+      s.setProperty('--glass-left', t.glassX + '%');
+      s.setProperty('--glass-top',  t.glassY + '%');
+      s.setProperty('--glass-w',    t.glassW + '%');
+      s.setProperty('--glass-h',    t.glassH > 0 ? t.glassH + '%' : 'auto');
+    };
+    window.__applyTweaks(window.TWEAK_DEFAULTS);
+  </script>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = window.TWEAK_DEFAULTS;
+
+    function App() {
+      const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      React.useEffect(() => { window.__applyTweaks(t); }, [t]);
+
+      return (
+        <TweaksPanel>
+          <TweakSection label="Glass panel" />
+          <TweakSlider label="X position" value={t.glassX} min={0} max={60} step={0.5} unit="%"
+                       onChange={(v) => setTweak('glassX', v)} />
+          <TweakSlider label="Y position" value={t.glassY} min={0} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('glassY', v)} />
+          <TweakSlider label="Width" value={t.glassW} min={40} max={95} step={0.5} unit="%"
+                       onChange={(v) => setTweak('glassW', v)} />
+          <TweakSlider label="Height" value={t.glassH} min={0} max={85} step={0.5} unit="%"
+                       onChange={(v) => setTweak('glassH', v)} />
+        </TweaksPanel>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+  </script>
+</body>
+</html>

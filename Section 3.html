@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Section 3 — Plan with real-world scale</title>
+<style>
+  :root{
+    --bg:#0b0a0c;
+    --card:#0e0f12;
+    --frame:#23262e;
+    --frame-edge:#2c3038;
+    --green:#9ee437;
+    --green-bright:#aef241;
+    --green-ink:#1f3a07;
+    --orange:#f2a83a;
+    --title:#ffffff;
+    --desc:#9a9ca1;
+    --dim:#e9eaec;
+    --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    font-family:var(--font);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:4vh 4vw;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- Card : reference ratio 319 / 404 — same as Section 1 ---- */
+  .card{
+    position:relative;
+    width:660px;
+    height:836px;
+    flex:none;
+    border-radius:34px;
+    overflow:hidden;
+    background:var(--card);
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.85);
+    isolation:isolate;
+    container-type:inline-size;
+  }
+
+  /* ---- Full-bleed room render ---- */
+  .frame__photo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 38%;
+    z-index:0;
+  }
+  /* readability gradient so the footer sits on the photo */
+  .grade{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:linear-gradient(to top,
+      rgba(8,7,6,.96) 0%,
+      rgba(8,7,6,.86) 14%,
+      rgba(8,7,6,.35) 26%,
+      rgba(8,7,6,0) 38%);
+    pointer-events:none;
+  }
+
+  /* ---- Top dimension line (84") ---- */
+  .dim{
+    position:absolute;
+    z-index:4;
+    top:18.5%;
+    left:23.5%;
+    width:46%;
+    display:flex;
+    align-items:center;
+    gap:3.5%;
+    color:var(--dim);
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));
+  }
+  .dim__cap{
+    width:1px;
+    height:11px;
+    background:currentColor;
+    flex:none;
+    opacity:.92;
+  }
+  .dim__line{
+    flex:1;
+    height:1px;
+    background:currentColor;
+    opacity:.8;
+  }
+  .dim__val{
+    flex:none;
+    font-weight:500;
+    letter-spacing:.2px;
+    line-height:1;
+    white-space:nowrap;
+  }
+
+  /* ---- Green selection rectangle ---- */
+  .sel{
+    position:absolute;
+    z-index:5;
+    top:33.5%;
+    left:25.5%;
+    width:44.5%;
+    height:27.5%;
+  }
+  .sel__box{
+    position:absolute;
+    inset:0;
+    border:2px dashed var(--green);
+    border-radius:2px;
+    box-shadow:0 0 14px -2px rgba(158,228,55,.45);
+  }
+  .sel__handle{
+    position:absolute;
+    width:13px;
+    height:13px;
+    background:var(--green-bright);
+    border-radius:3px;
+    box-shadow:0 0 12px 1px rgba(158,228,55,.85),0 0 4px rgba(255,255,255,.6) inset;
+    transform:translate(-50%,-50%);
+  }
+  .sel__handle.tl{top:0;left:0;}
+  .sel__handle.tr{top:0;left:100%;}
+  .sel__handle.bl{top:100%;left:0;}
+  .sel__handle.br{top:100%;left:100%;}
+  .sel__tag{
+    position:absolute;
+    top:62%;
+    left:100%;
+    transform:translate(-46%,-50%);
+    background:var(--green-bright);
+    color:var(--green-ink);
+    font-weight:700;
+    letter-spacing:.2px;
+    line-height:1;
+    padding:.62em .82em;
+    border-radius:9px;
+    white-space:nowrap;
+    box-shadow:0 6px 16px -6px rgba(158,228,55,.7),0 0 0 1px rgba(0,0,0,.04);
+  }
+
+  /* ---- Mask rectangle: clips a copy of the room photo over the green line ---- */
+  .mask{
+    position:absolute;
+    z-index:7;
+    left:var(--mask-left,30%);
+    top:var(--mask-top,30%);
+    width:var(--mask-w,20%);
+    height:var(--mask-h,12%);
+    overflow:hidden;
+    pointer-events:none;
+  }
+  .mask::after{
+    content:none;
+  }
+  .mask__edge{
+    display:none;
+  }
+  .mask__img{
+    position:absolute;
+    object-fit:cover;
+    object-position:50% 38%;
+  }
+
+  /* ---- Footer ---- */
+  .footer{
+    position:absolute;
+    z-index:4;
+    left:7%;
+    right:7%;
+    bottom:5.6%;
+    color:var(--title);
+  }
+  .footer__head{
+    display:flex;
+    align-items:center;
+    gap:4%;
+    margin-bottom:3.4%;
+  }
+  .footer__icon{
+    flex:none;
+    width:9.6%;
+    aspect-ratio:1;
+    background:var(--orange);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#1c1205;
+    box-shadow:0 10px 24px -10px rgba(242,168,58,.6);
+  }
+  .footer__icon svg{width:54%;height:54%;}
+  .footer__title{
+    font-weight:700;
+    line-height:1.02;
+    letter-spacing:-.8px;
+  }
+  .footer__desc{
+    color:var(--desc);
+    font-weight:500;
+    line-height:1.32;
+    max-width:100%;
+  }
+
+  /* ---- Type scale tied to card width via container query ---- */
+  .dim__val{font-size:clamp(10px,2.7cqw,17px);}
+  .sel__tag{font-size:clamp(12px,3.3cqw,21px);}
+  .footer__title{font-size:clamp(18px,5.6cqw,36px);white-space:nowrap;}
+  .footer__desc{font-size:clamp(13px,4.2cqw,27px);}
+
+  @container (max-width:420px){
+    .sel__handle{width:11px;height:11px;}
+  }
+
+  /* ---- Embed mode (inside the landing page) ---- */
+  html.embed,html.embed body{height:100%;width:100%;overflow:hidden;}
+  html.embed body{
+    padding:0;
+    margin:0;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  html.embed .card{
+    width:660px;
+    height:836px;
+    max-width:none;
+    border-radius:34px;
+    box-shadow:none;
+    transform:scale(var(--fit-scale,1));
+    transform-origin:center center;
+  }
+</style>
+<script>
+(function(){
+  var isEmbed = location.search.indexOf('embed') > -1;
+  if(isEmbed){
+    document.documentElement.classList.add('embed');
+    document.documentElement.style.setProperty('--fit-scale', Math.min(window.innerWidth / 660, window.innerHeight / 836));
+  }
+  function fit(){
+    var c=document.querySelector('.card'); if(!c)return;
+    var s=isEmbed ? Math.min(window.innerWidth/660, window.innerHeight/836) : Math.min((window.innerWidth-24)/660,(window.innerHeight-24)/836);
+    c.style.transform='scale('+s+')';
+  }
+  function go(){ if(document.body) document.body.style.overflow='hidden'; fit(); }
+  window.addEventListener('resize',fit);
+  window.addEventListener('DOMContentLoaded',go);
+  window.addEventListener('load',go);
+  go();
+})();
+</script>
+</head>
+<body>
+  <div class="card" data-screen-label="Section 03">
+
+    <!-- Full-bleed room render -->
+    <img class="frame__photo" src="assets/room3.png" alt="Top-down living room layout" />
+    <div class="grade"></div>
+
+    <!-- Top dimension line -->
+    <div class="dim">
+      <span class="dim__cap"></span>
+      <span class="dim__line"></span>
+      <span class="dim__val">84&Prime;</span>
+      <span class="dim__line"></span>
+      <span class="dim__cap"></span>
+    </div>
+
+    <!-- Green selection rectangle + handles + tag -->
+    <div class="sel">
+      <div class="sel__box"></div>
+      <span class="sel__handle tl"></span>
+      <span class="sel__handle tr"></span>
+      <span class="sel__handle bl"></span>
+      <span class="sel__handle br"></span>
+      <span class="sel__tag">8&prime; x 10&prime;</span>
+    </div>
+
+    <!-- Mask rectangles: repaint the room photo over these regions, hiding the green line beneath -->
+    <div class="mask"><img class="mask__img" src="assets/room3.png" alt="" /><span class="mask__edge"></span></div>
+    <div class="mask mask2"><img class="mask__img" src="assets/room3.png" alt="" /><span class="mask__edge"></span></div>
+    <div class="mask mask3"><img class="mask__img" src="assets/room3.png" alt="" /><span class="mask__edge"></span></div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer__head">
+        <span class="footer__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        </span>
+        <div class="footer__title">Plan with real-world scale</div>
+      </div>
+      <p class="footer__desc">Place furniture, check dimensions,<br/>and visualize how everything fits.</p>
+    </div>
+  </div>
+
+  <div id="tweaks-root"></div>
+
+  <script>
+    // Single source of truth for tweak values; applied synchronously at parse
+    // time (before React/Babel) so the elements never flash their CSS defaults.
+    window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "selX": 19.5,
+      "selY": 22.5,
+      "selW": 62.5,
+      "selH": 45.5,
+      "dimX": 27.5,
+      "dimY": 7,
+      "dimW": 46,
+      "maskX": 29.5,
+      "maskY": 20.5,
+      "maskW": 40.5,
+      "maskH": 6.5,
+      "mask2X": 17.5,
+      "mask2Y": 34,
+      "mask2W": 4.5,
+      "mask2H": 11.5,
+      "mask3X": 17,
+      "mask3Y": 50,
+      "mask3W": 4.5,
+      "mask3H": 11.5
+    }/*EDITMODE-END*/;
+    window.__applyTweaks = function(t){
+      var sel = document.querySelector('.sel');
+      var dim = document.querySelector('.dim');
+      if (sel) { sel.style.left = t.selX + '%'; sel.style.top = t.selY + '%'; sel.style.width = t.selW + '%'; sel.style.height = t.selH + '%'; }
+      if (dim) { dim.style.left = t.dimX + '%'; dim.style.top = t.dimY + '%'; dim.style.width = t.dimW + '%'; }
+      [['.mask','mask'],['.mask2','mask2'],['.mask3','mask3']].forEach(function(pair){
+        var m = document.querySelector(pair[0]);
+        if (!m) return;
+        var k = pair[1];
+        var x = t[k+'X'], y = t[k+'Y'], w = t[k+'W'], h = t[k+'H'];
+        m.style.left = x + '%'; m.style.top = y + '%'; m.style.width = w + '%'; m.style.height = h + '%';
+        var img = m.querySelector('.mask__img');
+        if (img) {
+          img.style.width  = (10000 / w) + '%';
+          img.style.height = (10000 / h) + '%';
+          img.style.left   = (-x / w * 100) + '%';
+          img.style.top    = (-y / h * 100) + '%';
+        }
+      });
+    };
+    window.__applyTweaks(window.TWEAK_DEFAULTS);
+  </script>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = window.TWEAK_DEFAULTS;
+
+    function App() {
+      const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      React.useEffect(() => { window.__applyTweaks(t); }, [t]);
+
+      return (
+        <TweaksPanel>
+          <TweakSection label="Selection rectangle" />
+          <TweakSlider label="X position" value={t.selX} min={0} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('selX', v)} />
+          <TweakSlider label="Y position" value={t.selY} min={0} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('selY', v)} />
+          <TweakSlider label="Width" value={t.selW} min={15} max={80} step={0.5} unit="%"
+                       onChange={(v) => setTweak('selW', v)} />
+          <TweakSlider label="Height" value={t.selH} min={10} max={60} step={0.5} unit="%"
+                       onChange={(v) => setTweak('selH', v)} />
+
+          <TweakSection label="Dimension line" />
+          <TweakSlider label="X position" value={t.dimX} min={0} max={60} step={0.5} unit="%"
+                       onChange={(v) => setTweak('dimX', v)} />
+          <TweakSlider label="Y position" value={t.dimY} min={0} max={50} step={0.5} unit="%"
+                       onChange={(v) => setTweak('dimY', v)} />
+          <TweakSlider label="Width" value={t.dimW} min={20} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('dimW', v)} />
+
+          <TweakSection label="Mask rectangle" />
+          <TweakSlider label="X position" value={t.maskX} min={0} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('maskX', v)} />
+          <TweakSlider label="Y position" value={t.maskY} min={0} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('maskY', v)} />
+          <TweakSlider label="Width" value={t.maskW} min={2} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('maskW', v)} />
+          <TweakSlider label="Height" value={t.maskH} min={2} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('maskH', v)} />
+
+          <TweakSection label="Mask rectangle 2" />
+          <TweakSlider label="X position" value={t.mask2X} min={0} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask2X', v)} />
+          <TweakSlider label="Y position" value={t.mask2Y} min={0} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask2Y', v)} />
+          <TweakSlider label="Width" value={t.mask2W} min={2} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask2W', v)} />
+          <TweakSlider label="Height" value={t.mask2H} min={2} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask2H', v)} />
+
+          <TweakSection label="Mask rectangle 3" />
+          <TweakSlider label="X position" value={t.mask3X} min={0} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask3X', v)} />
+          <TweakSlider label="Y position" value={t.mask3Y} min={0} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask3Y', v)} />
+          <TweakSlider label="Width" value={t.mask3W} min={2} max={90} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask3W', v)} />
+          <TweakSlider label="Height" value={t.mask3H} min={2} max={70} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mask3H', v)} />
+        </TweaksPanel>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+  </script>
+</body>
+</html>
