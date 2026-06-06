@@ -9,18 +9,20 @@
     --bg:#fbfaf8;
     --ink:#16140f;
     --muted:#6f6a60;
-    --grid:rgba(20,18,12,.06);
+    --glow:rgba(214,178,134,.20);     /* warm sand light wash */
+    --glow-2:rgba(176,196,188,.14);   /* faint cool counter-tone */
+    --grain:.5;                        /* texture strength */
     --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{height:100%;overflow:hidden;}
   body{
     background-color:var(--bg);
+    /* soft, off-center light washes — organic, not a uniform grid */
     background-image:
-      linear-gradient(to right, var(--grid) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-    background-size:52px 52px;
-    background-position:center top;
+      radial-gradient(120% 90% at 18% -10%, var(--glow) 0%, transparent 50%),
+      radial-gradient(110% 80% at 92% 8%, var(--glow-2) 0%, transparent 55%);
+    background-attachment:fixed;
     font-family:var(--font);
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
@@ -30,11 +32,25 @@
     justify-content:center;
     transition:background-color .6s ease,color .6s ease;
   }
+  /* Fine film-grain / paper texture overlay */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:220px 220px;
+    opacity:var(--grain);
+    mix-blend-mode:soft-light;
+  }
   body.is-night{
     --bg:#141416;
     --ink:#ffffff;
     --muted:#c7c2b7;
-    --grid:rgba(255,255,255,.06);
+    --glow:rgba(231,180,133,.10);
+    --glow-2:rgba(120,130,150,.10);
+    --grain:.4;
   }
   /* Slow crossfade for the room renders when switching day/night */
   .direct-card__photo,
