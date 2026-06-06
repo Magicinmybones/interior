@@ -780,6 +780,9 @@
   }
 
   @media (max-width:920px){
+    /* Let the page scroll normally instead of scaling to fit the viewport */
+    html,body{height:auto;overflow-x:hidden;overflow-y:auto;}
+    .wrap{transform:none !important;}
     .cards{grid-template-columns:repeat(2,1fr);gap:clamp(16px,3vw,24px);}
   }
   @media (max-width:540px){
@@ -1108,6 +1111,8 @@
         var wrap = document.querySelector('.wrap');
         if(!wrap) return;
         wrap.style.transform = 'none';
+        // On small screens the page scrolls normally — don't scale-to-fit.
+        if(window.innerWidth <= 920) return;
         var width = wrap.offsetWidth;
         var height = wrap.offsetHeight;
         if(!width || !height) return;
