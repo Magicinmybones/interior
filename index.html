@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Design your next room — Landing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 <style>
   :root{
     --bg:#fbfaf8;
@@ -795,6 +798,14 @@
     font-size:clamp(13px,4.2cqw,27px);
   }
 
+  /* Material Icons sit inside the round footer badges */
+  .direct-footer__icon .material-icons,
+  .direct3-footer__icon .material-icons,
+  .direct4-footer__icon .material-icons{
+    font-size:clamp(15px,5.6cqw,34px);
+    line-height:1;
+  }
+
   @media (max-width:920px){
     /* Let the page scroll normally instead of scaling to fit the viewport */
     html,body{height:auto;overflow-x:hidden;overflow-y:auto;}
@@ -849,8 +860,8 @@
 
             <div class="direct-footer">
               <div class="direct-footer__head">
-                <span class="direct-footer__icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span class="direct-footer__icon" style="background:#4f86c6;color:#fff;box-shadow:0 10px 24px -10px rgba(79,134,198,.6);">
+                  <span class="material-icons">groups</span>
                 </span>
                 <div class="direct-footer__title">Design the room together</div>
               </div>
