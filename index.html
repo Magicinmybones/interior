@@ -1186,17 +1186,24 @@
     })();
 
     // Card 04: assign a random local texture to each panel thumb / swatch tile.
-    (function(){
-      var textures = [
-        'assets/section4_textures/image.png',
-        'assets/section4_textures/image copy.png',
-        'assets/section4_textures/image copy 2.png'
-      ];
-      document.querySelectorAll('#directCardFourArtboard .direct4-tex').forEach(function(img){
-        var pick = textures[Math.floor(Math.random() * textures.length)];
-        img.src = encodeURI(pick);
-      });
-    })();
+ (function () {
+  var textures = [
+    'assets/section4_textures/text (1).png',
+    'assets/section4_textures/text (2).png',
+    'assets/section4_textures/text (3).png',
+    'assets/section4_textures/text (4).png',
+    'assets/section4_textures/text (5).png',
+    'assets/section4_textures/text (6).png',
+    'assets/section4_textures/text (7).png',
+    'assets/section4_textures/text (8).png',
+    'assets/section4_textures/text (9).png'
+  ];
+
+  document.querySelectorAll('#directCardFourArtboard .direct4-tex')
+    .forEach(function (img, index) {
+      img.src = encodeURI(textures[index]);
+    });
+})();
   </script>
 </body>
 </html>
