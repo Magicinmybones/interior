@@ -48,13 +48,19 @@
     mix-blend-mode:soft-light;
   }
   body.is-night{
-    --bg:#141416;
-    --ink:#ffffff;
-    --muted:#c7c2b7;
-    --glow:rgba(231,180,133,.10);
-    --glow-2:rgba(120,130,150,.10);
-    --grain:.4;
-  }
+  /* --bg:#141416; */
+  --ink:#ffffff;
+  --muted:#c7c2b7;
+  --glow:rgba(231,180,133,.10);
+  --glow-2:rgba(120,130,150,.10);
+  --grain:.4;
+
+  background-image:
+    url("assets/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
   /* Slow crossfade for the room renders when switching day/night */
   .direct-card__photo,
   .direct3-photo,
