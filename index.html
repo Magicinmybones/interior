@@ -1226,20 +1226,20 @@ font-weight:200;
     // Card 04: assign a random local texture to each panel thumb / swatch tile.
  (function () {
   var textures = [
-    'assets/section4_textures/text (1).png',
-    'assets/section4_textures/text (2).png',
-    'assets/section4_textures/text (3).png',
-    'assets/section4_textures/text (4).png',
-    'assets/section4_textures/text (5).png',
-    'assets/section4_textures/text (6).png',
-    'assets/section4_textures/text (7).png',
-    'assets/section4_textures/text (8).png',
-    'assets/section4_textures/text (9).png'
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915396/text_1_nnp1pl.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915394/text_2_cjb8hw.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915395/text_3_z3l3bs.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915393/text_4_xbmifm.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915398/text_5_epk2mb.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915398/text_6_pkwose.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915399/text_7_wawh7x.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915399/text_8_jlqcnu.png',
+    'https://res.cloudinary.com/dgupuutfn/image/upload/v1780915400/text_9_fytno2.png'
   ];
 
   document.querySelectorAll('#directCardFourArtboard .direct4-tex')
     .forEach(function (img, index) {
-      img.src = encodeURI(textures[index]);
+      img.src = textures[index];
     });
 })();
   </script>
