@@ -8,6 +8,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 <style>
+@font-face{
+  font-family:"Neue Montreal";
+  src:url("assets/fonts/NeueMontreal-Regular.woff2") format("woff2");
+  font-weight:400;
+}
+
+@font-face{
+  font-family:"Neue Montreal";
+  src:url("assets/fonts/NeueMontreal-Medium.woff2") format("woff2");
+  font-weight:500;
+}
+
+@font-face{
+  font-family:"Neue Montreal";
+  src:url("assets/fonts/NeueMontreal-Bold.woff2") format("woff2");
+  font-weight:700;
+}
+</style>
+<style>
   :root{
     --bg:#fbfaf8;
     --ink:#16140f;
@@ -15,26 +34,28 @@
     --glow:rgba(214,178,134,.20);     /* warm sand light wash */
     --glow-2:rgba(176,196,188,.14);   /* faint cool counter-tone */
     --grain:.5;                        /* texture strength */
-    --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    /* --font:"Helvetica Neue",Helvetica,Arial,sans-serif; */
+    --font:"Neue Montreal", sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{height:100%;overflow:hidden;}
   body{
-    background-color:var(--bg);
-    /* soft, off-center light washes — organic, not a uniform grid */
-    background-image:
-      radial-gradient(120% 90% at 18% -10%, var(--glow) 0%, transparent 50%),
-      radial-gradient(110% 80% at 92% 8%, var(--glow-2) 0%, transparent 55%);
-    background-attachment:fixed;
-    font-family:var(--font);
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-    overflow:hidden;
-    display:flex;
-    justify-content:center;
-    transition:background-color .6s ease,color .6s ease;
-  }
+  background-color:var(--bg);
+  background-image:url("assets/lightbg.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+
+  font-family:var(--font);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  transition:background-color .6s ease,color .6s ease;
+}
   /* Fine film-grain / paper texture overlay */
   body::before{
     content:"";
@@ -141,12 +162,19 @@
     max-width:880px;
     margin:0 auto clamp(40px,5vw,72px);
   }
-  .head h1{
+  /* .head h1{
     font-weight:700;
     letter-spacing:-0.018em;
     line-height:1.04;
     font-size:clamp(24px,3.8vw,48px);
-  }
+  } */
+   .head h1{
+  font-family:"Neue Montreal", sans-serif;
+  font-weight:300;
+  letter-spacing:-0.01em;
+  line-height:1.02;
+  font-size:clamp(28px,4vw,56px);
+}
   .head p{
     margin:clamp(18px,2vw,28px) auto 0;
     max-width:560px;
@@ -155,6 +183,8 @@
     line-height:1.5;
     font-size:clamp(12px,1.05vw,15px);
     text-wrap:pretty;
+    font-family:"Neue Montreal", sans-serif;
+font-weight:200;
   }
 
   /* ---- Card row ---- */
